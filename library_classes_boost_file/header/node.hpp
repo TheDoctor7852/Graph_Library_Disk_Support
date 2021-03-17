@@ -2,7 +2,6 @@
 #include <boost/interprocess/containers/vector.hpp>
 #include <boost/interprocess/allocators/allocator.hpp>
 #include <boost/interprocess/containers/flat_map.hpp>
-//#include <boost/interprocess/smart_ptr/unique_ptr.hpp>
 #include <boost/interprocess/sync/interprocess_sharable_mutex.hpp>
 #include <boost/interprocess/sync/sharable_lock.hpp>
 
@@ -41,6 +40,10 @@ typedef bi::interprocess_sharable_mutex sharable_mutex_type;
 
 #ifndef NODE_HPP
 #define NODE_HPP
+
+/*
+  class implementing Nodes of a Graph
+*/
 class Node{
   private:
         node::id_t id;
@@ -48,37 +51,83 @@ class Node{
         sharable_mutex_type write_inc;
         sharable_mutex_type write_out;
 
+        /*
+          keep track of Realtionships pointing to this Node
+        */
         bi::offset_ptr<Rel_Pointer_Vec> incomming_rel;
+
+        /*
+          keep track of Realtionships leaving this Node
+        */
         bi::offset_ptr<Rel_Pointer_Vec> outgoing_rel;
 
+        /*
+          maintain Propertys added to this Node
+        */
         bi::offset_ptr<Property_Map> propertys;
 
         friend Relationship;
         friend Graph;
 
+        /*
+          adds an Relationship to the incomming Relationships vector.
+        */
         void add_incomming_rel(bi::offset_ptr<Relationship> input);
+
+        /*
+          removes an Relationship from the incomming Relationships vector.
+        */
         void remove_incomming_rel(bi::offset_ptr<Relationship> input);
 
+        /*
+          adds an Relationship to the outgoing Relationships Vector.
+        */
         void add_outgoing_rel(bi::offset_ptr<Relationship> input);
-        void remove_outgoing_rel(bi::offset_ptr<Relationship> input);//die vier waren vorher private
+
+        /*
+          removes an Relationship from the outgoing Relationships Vector.
+        */
+        void remove_outgoing_rel(bi::offset_ptr<Relationship> input);
 
 
     public:
 
         Node(node::id_t input, bi::managed_mapped_file& segment);
-        Node(Node&& n); //wird wegen mutex benötigt
+        Node(Node&& n);
 
-        //~Node();
-
+        /*
+          add an property with any value to the Node. The given string identfies the added Property. If the key already exists, nothing will happen.
+        */
         void add_property(std::string key, boost::any value);
+
+        /*
+          removes the property identified by the given string. 
+        */
         void remove_property(std::string key);
+
+        /*
+          changes the property identified by the given string. A function is required if for example an vector was stored and needs to be modified without overwriting. 
+        */
         bool change_property(std::string key, std::function<void(boost::any&)> f);
-        const boost::any read_property(std::string key); //hier mal die rückgabe referenz rausgenommen, um zu verhindern, dass man unfertigen zustand liest
- 
+
+        /*
+          read the property identified by the given string. If no value identified by the given string exists an exception will be thrown.
+        */
+        const boost::any read_property(std::string key);
+        
+        /*
+          get the vector keeping track of Realtionships pointing to this Node
+        */
         const bi::offset_ptr<Rel_Pointer_Vec> get_incomming_rel();
 
+        /*
+          get the vector keeping track of Realtionships leaving this Node
+        */
         const bi::offset_ptr<Rel_Pointer_Vec> get_outgoing_rel();
- 
+
+        /*
+          get the Node id
+        */
         node::id_t get_id();
 
         Node& operator=(const Node& n);
