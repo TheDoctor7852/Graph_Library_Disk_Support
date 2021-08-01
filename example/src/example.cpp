@@ -199,9 +199,11 @@ void label_prop_serial(Graph& g){
 }
 
 int main(){
-    Graph g("Example", 200000000);
+    Graph g("Example.vec", 200000000);
 
-    auto pool = graph_pool::open("../../Poseidon_GraphAnalytics/test/graph/20000nodeGraph");
+    std::string path_Graphs = "../../../C++_Programme/Poseidon_GraphAnalytics/test/graph/";
+
+    auto pool = graph_pool::open(path_Graphs + "20000nodeGraph");
     auto graph = pool->open_graph("20000nodeGraph");
 
     auto start_init = std::chrono::high_resolution_clock::now();

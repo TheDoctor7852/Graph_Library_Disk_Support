@@ -1,3 +1,4 @@
 library_classes_boost_file/build/libgraph_components.so
 *.vscode
 example/example
+example/PageRank

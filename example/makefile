@@ -13,3 +13,9 @@ example: $(OBJDIR)/example.o
 
 $(OBJDIR)/example.o: $(SRCDIR)/example.cpp
 	g++ -g $(CXX_FLAGS) $(CXX_DEFINES) $(INC) -I../library_classes_boost_file/header  -o $@ -c $^
+
+PageRank: $(OBJDIR)/pageRank.o
+	g++ -g $(CXX_FLAGS) $^ -o $@ $(LINKER_COMMANDS) -Wl,-rpath,../library_classes_boost_file/build -L../library_classes_boost_file/build -lgraph_components -lprimesieve
+
+$(OBJDIR)/pageRank.o: $(SRCDIR)/pageRank.cpp
+	g++ -g $(CXX_FLAGS) $(CXX_DEFINES) $(INC) -I../library_classes_boost_file/header  -o $@ -c $^
