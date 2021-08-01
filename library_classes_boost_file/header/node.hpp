@@ -4,6 +4,7 @@
 #include <boost/interprocess/containers/flat_map.hpp>
 #include <boost/interprocess/sync/interprocess_sharable_mutex.hpp>
 #include <boost/interprocess/sync/sharable_lock.hpp>
+#include<boost/interprocess/containers/string.hpp>
 
 #include <vector>
 #include <map>
@@ -19,8 +20,8 @@ class Graph;
 typedef bi::allocator<bi::offset_ptr<Relationship>, bi::managed_mapped_file::segment_manager> Rel_Pointer_Allocator;
 typedef bi::vector<bi::offset_ptr<Relationship>, Rel_Pointer_Allocator> Rel_Pointer_Vec;
 
-typedef bi::allocator<std::pair<const std::string, boost::any>, bi::managed_mapped_file::segment_manager> PropMapAllocator;
-typedef bi::flat_map<std::string, boost::any, std::less<std::string>, PropMapAllocator> Property_Map;
+typedef bi::allocator<std::pair<const bi::string, boost::any>, bi::managed_mapped_file::segment_manager> PropMapAllocator;
+typedef bi::flat_map<bi::string, boost::any, std::less<bi::string>, PropMapAllocator> Property_Map;
 
 typedef bi::interprocess_sharable_mutex sharable_mutex_type;
 
@@ -98,22 +99,22 @@ class Node{
         /*
           add an property with any value to the Node. The given string identfies the added Property. If the key already exists, nothing will happen.
         */
-        void add_property(std::string key, boost::any value);
+        void add_property(bi::string key, boost::any value);
 
         /*
           removes the property identified by the given string. 
         */
-        void remove_property(std::string key);
+        void remove_property(bi::string key);
 
         /*
           changes the property identified by the given string. A function is required if for example an vector was stored and needs to be modified without overwriting. 
         */
-        bool change_property(std::string key, std::function<void(boost::any&)> f);
+        bool change_property(bi::string key, std::function<void(boost::any&)> f);
 
         /*
           read the property identified by the given string. If no value identified by the given string exists an exception will be thrown.
         */
-        const boost::any read_property(std::string key);
+        const boost::any read_property(bi::string key);
         
         /*
           get the vector keeping track of Realtionships pointing to this Node

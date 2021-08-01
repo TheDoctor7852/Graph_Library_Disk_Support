@@ -27,22 +27,22 @@ class Relationship{
         /*
           add an property with any value to the Relationship. The given string identfies the added Property. If the key already exists, nothing will happen.
         */
-        void add_property(std::string key, boost::any value);
+        void add_property(bi::string key, boost::any value);
 
         /*
           removes the property identified by the given string. 
         */
-        void remove_property(std::string key);
+        void remove_property(bi::string key);
 
         /*
           changes the property identified by the given string. A function is required if for example an vector was stored and needs to be modified without overwriting. 
         */
-        bool change_property(std::string key, std::function<void(boost::any&)> f);
+        bool change_property(bi::string key, std::function<void(boost::any&)> f);
 
         /*
           read the property identified by the given string. If no value identified by the given string exists an exception will be thrown.
         */
-        const boost::any read_property(std::string key);
+        const boost::any read_property(bi::string key);
 
         /*
           get the Relationship id

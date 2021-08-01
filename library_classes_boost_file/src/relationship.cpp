@@ -29,17 +29,17 @@ Relationship::Relationship(Relationship&& r){
     //to->remove_incomming_rel(this);
 }*/
 
-void Relationship::add_property(std::string key, boost::any value){
+void Relationship::add_property(bi::string key, boost::any value){
     bi::scoped_lock<sharable_mutex_type> lock(write);
     propertys->insert(std::make_pair(key, value));
 }
 
-void Relationship::remove_property(std::string key){
+void Relationship::remove_property(bi::string key){
     bi::scoped_lock<sharable_mutex_type> lock(write);
     propertys->erase(key);
 }
 
-bool Relationship::change_property(std::string key, std::function<void(boost::any&)> f){
+bool Relationship::change_property(bi::string key, std::function<void(boost::any&)> f){
     bi::scoped_lock<sharable_mutex_type> lock(write);
         try{
             f(propertys->at(key));
@@ -49,7 +49,7 @@ bool Relationship::change_property(std::string key, std::function<void(boost::an
         }
 }
 
-const boost::any Relationship::read_property(std::string key){
+const boost::any Relationship::read_property(bi::string key){
     bi::sharable_lock<sharable_mutex_type> lock(write);
     return propertys->at(key);
 }

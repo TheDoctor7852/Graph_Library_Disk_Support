@@ -29,22 +29,22 @@ Node::~Node(){
     propertys->clear();
 }
 */
-void Node::add_property(std::string key, boost::any value){
+void Node::add_property(bi::string key, boost::any value){
     bi::scoped_lock<sharable_mutex_type> lock(write_property);
     propertys->insert(std::make_pair(key, value));
 }
 
-void Node::remove_property(std::string key){
+void Node::remove_property(bi::string key){
     bi::scoped_lock<sharable_mutex_type> lock(write_property);
     propertys->erase(key);
 }
 
-const boost::any Node::read_property(std::string key){
+const boost::any Node::read_property(bi::string key){
     bi::sharable_lock<sharable_mutex_type> lock(write_property);
     return propertys->at(key);
 }
 
-bool Node::change_property(std::string key, std::function<void(boost::any&)> f){ //idee, übergebe eine Funktion die verändert und return true, wenn fertig
+bool Node::change_property(bi::string key, std::function<void(boost::any&)> f){ //idee, übergebe eine Funktion die verändert und return true, wenn fertig
     bi::scoped_lock<sharable_mutex_type> lock(write_property);
         try{
             f(propertys->at(key));
